@@ -7,9 +7,6 @@ import React, {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import mockFriendsList from './mock-friends-list';
-import FriendRow from '../../components/friend-row/friend-row';
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -59,39 +56,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const Friends = React.createClass({
+const Bills = React.createClass({
   getInitialState: function getInitialState() {
-    const hideSettledFriends = false;
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1.email !== r2.email,
     });
 
     return {
-      hideSettledFriends,
-      dataSource: ds.cloneWithRows(
-        hideSettledFriends ? R.reject((f) => f.owesYou === f.youOwe)(mockFriendsList) : mockFriendsList
-      ),
+      dataSource: ds.cloneWithRows(mockFriendsList),
     };
   },
 
-  handleHideSettledFriendsPress: function handleHideSettledFriendsPress() {
-    const hideSettledFriends = !this.state.hideSettledFriends;
-    this.setState({
-      hideSettledFriends,
-      dataSource: this.state.dataSource.cloneWithRows(
-        hideSettledFriends ? R.reject((f) => f.owesYou === f.youOwe)(mockFriendsList) : mockFriendsList
-      ),
-    });
-  },
-
-  renderFriendRow: function renderFriendRow(friend) {
-    return <FriendRow friend={friend}/>;
+  renderBillRow: function renderBillRow(bill) {
+    return <BillRow bill={bill}/>;
   },
 
   render: function render() {
-    const youOweTotal = R.reduce((acc, friend) => acc + friend.youOwe)(0)(mockFriendsList);
-    const theyOweTotal = R.reduce((acc, friend) => acc + friend.owesYou)(0)(mockFriendsList);
-    const difference = theyOweTotal - youOweTotal;
+    const youOweTotal = 0; //  R.reduce((acc, friend) => acc + friend.youOwe)(0)(mockFriendsList);
+    const theyOweTotal = 0; // R.reduce((acc, friend) => acc + friend.owesYou)(0)(mockFriendsList);
+    const difference = 0; // theyOweTotal - youOweTotal;
 
     return (
       <View style={styles.container}>
@@ -113,22 +96,11 @@ const Friends = React.createClass({
         </View>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={this.renderFriendRow}
+          renderRow={this.renderBillRow}
         />
-        {/*<View style={styles.listFilterContainer}>
-          <Icon.Button
-            name={this.state.hideSettledFriends ? 'check-square-o' : 'square-o'}
-            style={{height: 24}}
-            size={15}
-            backgroundColor="#000"
-            onPress={this.handleHideSettledFriendsPress}
-          >
-            <Text style={styles.hideSettledButtonText}>Hide settled friends</Text>
-          </Icon.Button>
-        </View>*/}
       </View>
     );
   },
 });
 
-export default Friends;
+export default Bills;
