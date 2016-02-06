@@ -1,4 +1,3 @@
-// TODO: Figure out how to autoscroll on keyboard entry
 import React, {
   View,
   Text,
@@ -66,10 +65,15 @@ const Login = React.createClass({
         <View style={styles.loginBox}>
           <TextInput
             style={styles.textInput}
+            placeholder="Your Name"
+            autoCorrect={false}
+            autoFocus
+          />
+          <TextInput
+            style={styles.textInput}
             placeholder="E-mail"
             keyboardType="email-address"
             autoCorrect={false}
-            autoFocus
             autoCapitalize="none"
           />
           <TextInput
@@ -79,14 +83,18 @@ const Login = React.createClass({
             autoCorrect={false}
             autoCapitalize="none"
           />
+          <TextInput
+            style={styles.textInput}
+            placeholder="Re-Type Password"
+            secureTextEntry
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
           <TouchableHighlight>
             <View style={styles.loginButtonContainer}>
-              <Text style={styles.loginButtonContainerText}>Login</Text>
+              <Text style={styles.loginButtonContainerText}>Sign Up</Text>
             </View>
           </TouchableHighlight>
-          <TouchableOpacity style={styles.signUpButtonContainer}>
-            <Text style={styles.signUpButtonText}>New? Sign Up!</Text>
-          </TouchableOpacity>
         </View>
       </View>
     );

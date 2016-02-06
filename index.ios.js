@@ -7,8 +7,10 @@ import React, {
 } from 'react-native';
 
 import Login from './scenes/login/login';
+import Signup from './scenes/signup/signup';
 
-const LOGIN_SCREEN = 'login';
+const LOGIN_SCENE = 'login';
+const SIGNUP_SCENE = 'signup';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,8 +21,12 @@ const styles = StyleSheet.create({
 
 const HappySplit = React.createClass({
   renderScene: function renderScene(route) {
-    if (route.name === LOGIN_SCREEN) {
+    if (route.name === LOGIN_SCENE) {
       return <Login />;
+    }
+
+    if (route.name === SIGNUP_SCENE) {
+      return <Signup />;
     }
 
     return <Text>{route.name}</Text>;
@@ -30,7 +36,7 @@ const HappySplit = React.createClass({
     return (
       <View style={styles.container}>
         <Navigator
-          initialRoute={{name: LOGIN_SCREEN, index: 0}}
+          initialRoute={{name: SIGNUP_SCENE, index: 0}}
           renderScene={this.renderScene}
         />
       </View>
