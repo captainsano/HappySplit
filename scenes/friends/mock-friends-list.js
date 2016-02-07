@@ -1,11 +1,11 @@
 const mockFriendsList = [{
   name: 'Aravind K',
-  email: 'arvindk@omail.com',
+  email: 'arvindk@xmail.com',
   youOwe: 100,
   owesYou: 200,
 }, {
   name: 'Mahesh R',
-  email: 'mahesh@omail.com',
+  email: 'mahesh@xmail.com',
   youOwe: 250,
   owesYou: 100,
 }, {

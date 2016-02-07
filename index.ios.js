@@ -10,6 +10,7 @@ import SceneNames from './scene-names';
 import Login from './scenes/login/login';
 import Signup from './scenes/signup/signup';
 import Friends from './scenes/friends/friends';
+import Bills from './scenes/bills/bills';
 import TabBar from './components/tab-bar/tab-bar';
 
 const styles = StyleSheet.create({
@@ -38,6 +39,15 @@ const HappySplit = React.createClass({
       );
     }
 
+    if (route.name === SceneNames.BILLS_SCENE) {
+      return (
+        <View style={{flex: 1}}>
+          <Bills />
+          <TabBar navigator={navigator} />
+        </View>
+      );
+    }
+
     return <Text>{route.name}</Text>;
   },
 
@@ -45,7 +55,7 @@ const HappySplit = React.createClass({
     return (
       <View style={styles.container}>
         <Navigator
-          initialRoute={{name: SceneNames.FRIENDS_SCENE, index: 0}}
+          initialRoute={{name: SceneNames.BILLS_SCENE, index: 0}}
           renderScene={this.renderScene}
         />
       </View>

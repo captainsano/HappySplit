@@ -7,6 +7,9 @@ import React, {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import mockBillsList from './mock-bills-list';
+import BillRow from '../../components/bill-row/bill-row';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -63,7 +66,7 @@ const Bills = React.createClass({
     });
 
     return {
-      dataSource: ds.cloneWithRows(mockFriendsList),
+      dataSource: ds.cloneWithRows(mockBillsList),
     };
   },
 
