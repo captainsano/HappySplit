@@ -36,12 +36,12 @@ const TabBar = React.createClass({
           label="Friends"
           onPress={this.handleOnPress(this.props.navigator, SceneNames.FRIENDS_SCENE)}
         />
-        <TabItem
+        {/*<TabItem
           active={currentRoute && currentRoute.name === SceneNames.BILLS_SCENE}
           iconName="rupee"
           label="Bills"
           onPress={this.handleOnPress(this.props.navigator, SceneNames.BILLS_SCENE)}
-        />
+        />*/}
         <TabItem
           active={currentRoute && currentRoute.name === SceneNames.SETTINGS_SCENE}
           iconName="cog"

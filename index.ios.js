@@ -144,11 +144,15 @@ const HappySplit = React.createClass({
     }
 
     if (route.name === SceneNames.ADD_FRIEND_SCENE) {
-      return <AddFriend />;
+      return (
+        <AddFriend onDone={() => navigator.pop()} />
+      );
     }
 
     if (route.name === SceneNames.ADD_BILL_SCENE) {
-      return <AddBill onDone={navigator.pop()} />;
+      return (
+        <AddBill onDone={() => navigator.pop()} />
+      );
     }
 
     if (route.name === SceneNames.BILLS_SCENE) {
@@ -181,7 +185,7 @@ const HappySplit = React.createClass({
       <View style={styles.container}>
         <Navigator
           initialRoute={{
-            name: SceneNames.ADD_BILL_SCENE,
+            name: this.state.currentUser ? SceneNames.FRIENDS_SCENE : SceneNames.LOGIN_SCENE,
             index: 0,
           }}
           renderScene={this.renderScene}

@@ -2,10 +2,14 @@ import React, {
   View,
   Text,
   TouchableHighlight,
+  TouchableOpacity,
   ListView,
   StyleSheet,
 } from 'react-native';
+
 import {getNonFriendsList, addFriend} from '../../parse-queries';
+
+import NavBar from '../../components/nav-bar/nav-bar';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,6 +20,14 @@ const styles = StyleSheet.create({
     height: 44,
     borderBottomWidth: 1,
     borderBottomColor: '#000',
+  },
+  doneButtonContainer: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+  },
+  doneButtonText: {
+    color: '#fefefe',
   },
 });
 
@@ -67,8 +79,30 @@ const AddFriend = React.createClass({
   },
 
   render: function render() {
+    const navbar = (
+      <NavBar title="Add Friend">
+        <TouchableOpacity style={styles.doneButtonContainer}>
+          <Text
+            style={styles.doneButtonText}
+            onPress={() => this.props.onDone()}
+          >Done</Text>
+        </TouchableOpacity>
+      </NavBar>
+    );
+
+    // TODO: Handle loading state
+    if (this.state.usersLoading) {
+      return (
+        <View style={styles.container}>
+          {navbar}
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
+        {navbar}
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}

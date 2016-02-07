@@ -44,9 +44,9 @@ const FriendRow = React.createClass({
   render: function render() {
     const moneyBalance = ((owesYou, youOwe) => {
       if (owesYou > youOwe) {
-        return <Text style={{color: 'green'}}>₹ {owesYou - youOwe}</Text>;
+        return <Text style={{color: 'green'}}>₹ {(owesYou - youOwe).toFixed(2)}</Text>;
       } else if (owesYou < youOwe) {
-        return <Text style={{color: 'red'}}>₹ {youOwe - owesYou}</Text>;
+        return <Text style={{color: 'red'}}>₹ {(youOwe - owesYou).toFixed(2)}</Text>;
       }
 
       return <Text style={{color: 'green'}}>Settled</Text>;

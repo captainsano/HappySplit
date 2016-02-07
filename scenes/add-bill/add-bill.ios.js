@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   tagScrollView: {
-    height: 24,
+    height: 28,
   },
   tagFriendButton: {
     marginRight: 5,
@@ -219,10 +219,6 @@ const AddFriend = React.createClass({
       parseFloat(this.state.amount),
       this.state.description
     )
-    .then(() => {
-      console.log('added bill');
-      this.props.onDone();
-    })
     .then(() => this.props.onDone());
   },
 
@@ -303,7 +299,7 @@ const AddFriend = React.createClass({
               <TouchableHighlight
                 style={[styles.button, styles.cancelButton]}
                 underlayColor="#000"
-                onPress={this.onDone}
+                onPress={() => this.props.onDone()}
               >
                 <Text style={styles.buttonText}>Cancel</Text>
               </TouchableHighlight>

@@ -67,18 +67,12 @@ export function getFriendsList(currentUserId) {
 export function getNonFriendsList(currentUserId) {
   const currentUser = new Parse.User();
   currentUser.id = currentUserId;
-  return Parse.Query.or(
-    (new Parse.Query(Friend)).equalTo('left', currentUser),
-    (new Parse.Query(Friend)).equalTo('right', currentUser)
-    )
-    .find()
-    .then((friends) => (
+  return getFriendsList(currentUserId)
+    .then((friendsList) => (
       new Parse.Query(Parse.User)
-        .notEqualTo('objectId', currentUserId)
-        .notContainedIn('objectId', R.map(R.path(['attributes', 'left']))(friends))
-        .notContainedIn('objectId', R.map(R.path(['attributes', 'right']))(friends))
+        .notContainedIn('objectId', [currentUserId].concat(R.map(R.prop('id'))(friendsList)))
         .find()
-        .then((nonFriends) => R.map(userFormatter)(nonFriends))
+        .then(R.map(userFormatter))
     ));
 }
 
@@ -105,7 +99,7 @@ export function getPaymentsList(currentUserId) {
     (new Parse.Query(Payment)).equalTo('to', currentUserId)
     )
     .find()
-    .then((payments) => R.map(paymentFormatter)(payments));
+    .then(R.map(paymentFormatter));
 }
 
 export function addBill(paidByUserId, sharedByUserIds, amount, description) {
@@ -124,19 +118,20 @@ export function addBill(paidByUserId, sharedByUserIds, amount, description) {
   return new Promise((resolve, reject) => {
     bill.save({
       success: () => resolve(),
-      error: (_, e) => console.log('add bill error', e),
+      error: () => reject(),
     });
   });
 }
 
 export function getBillsList(currentUserId) {
-  console.log('getting bills');
   const currentUser = new Parse.User();
   currentUser.id = currentUserId;
   return Parse.Query.or(
-    (new Parse.Query(Bill)).equalTo('paidBy', currentUser)
+    (new Parse.Query(Bill)).equalTo('paidBy', currentUser),
+    (new Parse.Query(Bill)).equalTo('sharedBy', currentUser)
     )
     .include('paidBy')
     .include('sharedBy')
+    .find()
     .then((bills) => R.map(billFormatter)(bills));
 }

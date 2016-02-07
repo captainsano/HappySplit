@@ -56,7 +56,7 @@ const Settings = React.createClass({
   },
 
   contextTypes: {
-    currentUser: React.PropTypes.object.isRequired,
+    currentUser: React.PropTypes.object,
   },
 
   handleLogoutButtonPress: function handleLogoutButtonPress() {
@@ -64,6 +64,8 @@ const Settings = React.createClass({
   },
 
   render: function render() {
+    if (!this.context.currentUser) { return null };
+
     return (
       <View style={styles.container}>
         <View style={styles.appMeta}>
