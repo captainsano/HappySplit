@@ -4,6 +4,7 @@ const SceneNames = {
   FRIENDS_SCENE: 'friends',
   BILLS_SCENE: 'bills',
   SETTINGS_SCENE: 'settings',
+  ADD_FRIEND_SCENE: 'add_friend',
 };
 
 export default SceneNames;

@@ -13,6 +13,7 @@ import SceneNames from './scene-names';
 import Login from './scenes/login/login';
 import SignUp from './scenes/signup/signup';
 import Friends from './scenes/friends/friends';
+import AddFriend from './scenes/add-friend/add-friend';
 import Bills from './scenes/bills/bills';
 import Settings from './scenes/settings/settings';
 import TabBar from './components/tab-bar/tab-bar';
@@ -53,9 +54,11 @@ const HappySplit = React.createClass({
   },
 
   configureScene: function configureScene(route) {
-    if (route.name === SceneNames.SIGNUP_SCENE) {
-      // Disable swipe-to-close gesture
-      return R.assocPath(['gestures', 'pop', 'edgeHitWidth'], 0, Navigator.SceneConfigs.FloatFromBottom);
+    switch (route.name) {
+      case SceneNames.ADD_FRIEND_SCENE:
+      case SceneNames.SIGNUP_SCENE:
+        return R.assocPath(['gestures', 'pop', 'edgeHitWidth'], 0, Navigator.SceneConfigs.FloatFromBottom);
+      default: return Navigator.SceneConfigs.PushFromRight;
     }
   },
 
@@ -99,6 +102,10 @@ const HappySplit = React.createClass({
     };
   },
 
+  handleAddFriendNavigation: function handleAddFriendNavigation(navigator) {
+    return () => navigator.push({name: SceneNames.ADD_FRIEND_SCENE});
+  },
+
   renderScene: function renderScene(route, navigator) {
     if (route.name === SceneNames.LOGIN_SCENE) {
       return (
@@ -121,10 +128,14 @@ const HappySplit = React.createClass({
     if (route.name === SceneNames.FRIENDS_SCENE) {
       return (
         <View style={{flex: 1}}>
-          <Friends />
+          <Friends onAddFriendNavigation={this.handleAddFriendNavigation(navigator)} />
           <TabBar navigator={navigator}/>
         </View>
       );
+    }
+
+    if (route.name === SceneNames.ADD_FRIEND_SCENE) {
+      return <AddFriend />;
     }
 
     if (route.name === SceneNames.BILLS_SCENE) {
