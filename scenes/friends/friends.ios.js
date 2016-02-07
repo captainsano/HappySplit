@@ -6,8 +6,8 @@ import React, {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Parse from 'parse/react-native';
 
-import mockFriendsList from './mock-friends-list';
 import FriendRow from '../../components/friend-row/friend-row';
 
 const styles = StyleSheet.create({
@@ -53,34 +53,37 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#000',
   },
-  hideSettledButtonText: {
-    fontSize: 12,
-    color: '#fefefe',
-  },
 });
 
 const Friends = React.createClass({
+  contextTypes: {
+    currentUser: React.PropTypes.object.isRequired,
+  },
+
   getInitialState: function getInitialState() {
-    const hideSettledFriends = false;
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1.email !== r2.email,
     });
 
     return {
-      hideSettledFriends,
-      dataSource: ds.cloneWithRows(
-        hideSettledFriends ? R.reject((f) => f.owesYou === f.youOwe)(mockFriendsList) : mockFriendsList
-      ),
+      friendsLoading: true,
+      dataSource: ds.cloneWithRows([]),
     };
   },
 
-  handleHideSettledFriendsPress: function handleHideSettledFriendsPress() {
-    const hideSettledFriends = !this.state.hideSettledFriends;
-    this.setState({
-      hideSettledFriends,
-      dataSource: this.state.dataSource.cloneWithRows(
-        hideSettledFriends ? R.reject((f) => f.owesYou === f.youOwe)(mockFriendsList) : mockFriendsList
-      ),
+  componentDidMount: function componentDidMount() {
+    const Friend = Parse.Object.extend('Friend');
+    const query = new Parse.Query(Friend);
+    query.equalTo('left', this.context.currentUser.id);
+    query.equalTo('right', this.context.currentUser.id);
+    query.find({
+      success: (results) => {
+        console.log('users: ', results);
+      },
+      error: (error) => {
+        // TODO: Handle Error
+        console.log(error);
+      },
     });
   },
 
@@ -89,8 +92,8 @@ const Friends = React.createClass({
   },
 
   render: function render() {
-    const youOweTotal = R.reduce((acc, friend) => acc + friend.youOwe)(0)(mockFriendsList);
-    const theyOweTotal = R.reduce((acc, friend) => acc + friend.owesYou)(0)(mockFriendsList);
+    const youOweTotal = R.reduce((acc, friend) => acc + friend.youOwe)(0)([]);
+    const theyOweTotal = R.reduce((acc, friend) => acc + friend.owesYou)(0)([]);
     const difference = theyOweTotal - youOweTotal;
 
     return (
@@ -115,17 +118,6 @@ const Friends = React.createClass({
           dataSource={this.state.dataSource}
           renderRow={this.renderFriendRow}
         />
-        {/*<View style={styles.listFilterContainer}>
-          <Icon.Button
-            name={this.state.hideSettledFriends ? 'check-square-o' : 'square-o'}
-            style={{height: 24}}
-            size={15}
-            backgroundColor="#000"
-            onPress={this.handleHideSettledFriendsPress}
-          >
-            <Text style={styles.hideSettledButtonText}>Hide settled friends</Text>
-          </Icon.Button>
-        </View>*/}
       </View>
     );
   },

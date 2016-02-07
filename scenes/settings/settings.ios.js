@@ -55,6 +55,10 @@ const Settings = React.createClass({
     onLogout: React.PropTypes.func.isRequired,
   },
 
+  contextTypes: {
+    currentUser: React.PropTypes.object.isRequired,
+  },
+
   handleLogoutButtonPress: function handleLogoutButtonPress() {
     this.props.onLogout();
   },
@@ -68,7 +72,7 @@ const Settings = React.createClass({
           <Text style={styles.appVersionText}>v1.0.0</Text>
         </View>
         <View style={styles.userMeta}>
-          <Text style={styles.nameText}>Santhos Baala RS</Text>
+          <Text style={styles.nameText}>{this.context.currentUser.attributes.name}</Text>
           <TouchableHighlight
             style={styles.logoutButton}
             onPress={this.handleLogoutButtonPress}

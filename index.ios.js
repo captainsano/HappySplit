@@ -81,6 +81,13 @@ const HappySplit = React.createClass({
     };
   },
 
+  handleSignUpComplete: function handleSignUpComplete(navigator) {
+    return () => {
+      // TODO: Show some message for signup
+      navigator.pop();
+    };
+  },
+
   handleLogout: function handleLogout(navigator) {
     return () => {
       Parse.User.logOut();
@@ -106,6 +113,7 @@ const HappySplit = React.createClass({
       return (
         <SignUp
           onCloseNavigation={this.handleSignUpCloseNavigation(navigator)}
+          onSignUpComplete={this.handleSignUpComplete(navigator)}
         />
       );
     }

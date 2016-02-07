@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
 const SignUp = React.createClass({
   propTypes: {
     onCloseNavigation: React.PropTypes.func.isRequired,
+    onSignUpComplete: React.PropTypes.func.isRequired,
   },
 
   getInitialState: function getInitialState() {
@@ -84,14 +85,14 @@ const SignUp = React.createClass({
       submiting: true,
       submitError: '',
     }, () => {
-      console.log('submittig...');
       const user = new Parse.User();
       user.set('username', this.state.email);
       user.set('name', this.state.name);
       user.set('password', this.state.password1);
       user.signUp(null, {
         success: (u) => {
-          console.log('Signed up!');
+          // TODO: Show some message for signup complete
+          this.props.onSignUpComplete();
         },
         error: (u, error) => {
           console.log('Error signing up!', error);
