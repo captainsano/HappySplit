@@ -9,6 +9,7 @@ import React, {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Parse from 'parse/react-native';
 
+import NavBar from '../../components/nav-bar/nav-bar';
 import FriendRow from '../../components/friend-row/friend-row';
 import {getFriendsList} from '../../parse-queries';
 
@@ -16,16 +17,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fefefe',
-  },
-  navbar: {
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#000',
-  },
-  navbarTitleText: {
-    color: '#fefefe',
-    fontSize: 20,
   },
   addFriendButton: {
     position: 'absolute',
@@ -78,11 +69,20 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#000',
   },
+  addBillButtonContainer: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addBillButton: {
+    backgroundColor: '#00aa00',
+  },
 });
 
 const Friends = React.createClass({
   propTypes: {
     onAddFriendNavigation: React.PropTypes.func.isRequired,
+    onAddBillNavigation: React.PropTypes.func.isRequired,
   },
 
   contextTypes: {
@@ -113,14 +113,17 @@ const Friends = React.createClass({
     this.props.onAddFriendNavigation();
   },
 
+  handleAddBillButtonPress: function handleAddbillButtonPress() {
+    this.props.onAddBillNavigation();
+  },
+
   renderFriendRow: function renderFriendRow(friend) {
     return <FriendRow friend={friend}/>;
   },
 
   render: function render() {
     const navbar = (
-      <View style={styles.navbar}>
-        <Text style={styles.navbarTitleText}>Friends</Text>
+      <NavBar title="Friends">
         <TouchableOpacity
           style={styles.addFriendButton}
           onPress={this.handleAddFriend}
@@ -128,7 +131,7 @@ const Friends = React.createClass({
           <Icon name="plus" size={12.5} color="#fff"/>
           <Text style={styles.addFriendButtonText}>Add Friend</Text>
         </TouchableOpacity>
-      </View>
+      </NavBar>
     );
 
     if (this.state.friendsLoading) {
@@ -167,6 +170,15 @@ const Friends = React.createClass({
           dataSource={this.state.dataSource}
           renderRow={this.renderFriendRow}
         />
+        <View style={styles.addBillButtonContainer}>
+          <Icon.Button
+            style={styles.addBillButton}
+            color="#fff"
+            name="plus"
+            size={12}
+            onPress={this.handleAddBillButtonPress}
+          >Add bill</Icon.Button>
+        </View>
       </View>
     );
   },

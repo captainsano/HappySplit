@@ -14,6 +14,7 @@ import Login from './scenes/login/login';
 import SignUp from './scenes/signup/signup';
 import Friends from './scenes/friends/friends';
 import AddFriend from './scenes/add-friend/add-friend';
+import AddBill from './scenes/add-bill/add-bill';
 import Bills from './scenes/bills/bills';
 import Settings from './scenes/settings/settings';
 import TabBar from './components/tab-bar/tab-bar';
@@ -55,8 +56,9 @@ const HappySplit = React.createClass({
 
   configureScene: function configureScene(route) {
     switch (route.name) {
-      case SceneNames.ADD_FRIEND_SCENE:
       case SceneNames.SIGNUP_SCENE:
+      case SceneNames.ADD_FRIEND_SCENE:
+      case SceneNames.ADD_BILL_SCENE:
         return R.assocPath(['gestures', 'pop', 'edgeHitWidth'], 0, Navigator.SceneConfigs.FloatFromBottom);
       default: return Navigator.SceneConfigs.PushFromRight;
     }
@@ -106,6 +108,10 @@ const HappySplit = React.createClass({
     return () => navigator.push({name: SceneNames.ADD_FRIEND_SCENE});
   },
 
+  handleAddBillNavigation: function handleAddBillNavigation(navigator) {
+    return () => navigator.push({name: SceneNames.ADD_BILL_SCENE});
+  },
+
   renderScene: function renderScene(route, navigator) {
     if (route.name === SceneNames.LOGIN_SCENE) {
       return (
@@ -128,7 +134,10 @@ const HappySplit = React.createClass({
     if (route.name === SceneNames.FRIENDS_SCENE) {
       return (
         <View style={{flex: 1}}>
-          <Friends onAddFriendNavigation={this.handleAddFriendNavigation(navigator)} />
+          <Friends
+            onAddFriendNavigation={this.handleAddFriendNavigation(navigator)}
+            onAddBillNavigation={this.handleAddBillNavigation(navigator)}
+          />
           <TabBar navigator={navigator}/>
         </View>
       );
@@ -136,6 +145,10 @@ const HappySplit = React.createClass({
 
     if (route.name === SceneNames.ADD_FRIEND_SCENE) {
       return <AddFriend />;
+    }
+
+    if (route.name === SceneNames.ADD_BILL_SCENE) {
+      return <AddBill onDone={navigator.pop()} />;
     }
 
     if (route.name === SceneNames.BILLS_SCENE) {
@@ -168,7 +181,7 @@ const HappySplit = React.createClass({
       <View style={styles.container}>
         <Navigator
           initialRoute={{
-            name: this.state.currentUser ? SceneNames.FRIENDS_SCENE : SceneNames.LOGIN_SCENE,
+            name: SceneNames.ADD_BILL_SCENE,
             index: 0,
           }}
           renderScene={this.renderScene}

@@ -40,7 +40,6 @@ const AddFriend = React.createClass({
   componentDidMount: function componentDidMount() {
     getNonFriendsList(this.context.currentUser.id)
       .then((nonFriends) => {
-        console.log('got non friends', nonFriends);
         this.setState({
           usersLoading: false,
           dataSource: this.state.dataSource.cloneWithRows(nonFriends),
