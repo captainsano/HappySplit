@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fefefe',
   },
   logoBox: {
     width: 100,
@@ -57,6 +58,14 @@ const styles = StyleSheet.create({
 });
 
 const Login = React.createClass({
+  propTypes: {
+    onSignUpNavigation: React.PropTypes.func.isRequired,
+  },
+
+  handleSignUpButtonPress: function handleSignUpButtonPress() {
+    this.props.onSignUpNavigation();
+  },
+
   render: function render() {
     return (
       <View style={styles.container}>
@@ -84,7 +93,10 @@ const Login = React.createClass({
               <Text style={styles.loginButtonContainerText}>Login</Text>
             </View>
           </TouchableHighlight>
-          <TouchableOpacity style={styles.signUpButtonContainer}>
+          <TouchableOpacity
+            style={styles.signUpButtonContainer}
+            onPress={this.handleSignUpButtonPress}
+          >
             <Text style={styles.signUpButtonText}>New? Sign Up!</Text>
           </TouchableOpacity>
         </View>

@@ -5,10 +5,11 @@ import React, {
   View,
   Navigator,
 } from 'react-native';
+import R from 'ramda';
 
 import SceneNames from './scene-names';
 import Login from './scenes/login/login';
-import Signup from './scenes/signup/signup';
+import SignUp from './scenes/signup/signup';
 import Friends from './scenes/friends/friends';
 import Bills from './scenes/bills/bills';
 import Settings from './scenes/settings/settings';
@@ -22,13 +23,40 @@ const styles = StyleSheet.create({
 });
 
 const HappySplit = React.createClass({
+  configureScene: function configureScene(route) {
+    if (route.name === SceneNames.SIGNUP_SCENE) {
+      // Disable swipe-to-close gesture
+      return R.assocPath(['gestures', 'pop', 'edgeHitWidth'], 0, Navigator.SceneConfigs.FloatFromBottom);
+    }
+  },
+
+  handleSignUpNavigation: function handleSignUpNavigation(navigator) {
+    return () => {
+      navigator.push({name: SceneNames.SIGNUP_SCENE});
+    };
+  },
+
+  handleSignUpCloseNavigation: function handleSignUpCloseNavigation(navigator) {
+    return () => {
+      navigator.pop();
+    };
+  },
+
   renderScene: function renderScene(route, navigator) {
     if (route.name === SceneNames.LOGIN_SCENE) {
-      return <Login />;
+      return (
+        <Login
+          onSignUpNavigation={this.handleSignUpNavigation(navigator)}
+        />
+      );
     }
 
     if (route.name === SceneNames.SIGNUP_SCENE) {
-      return <Signup />;
+      return (
+        <SignUp
+          onCloseNavigation={this.handleSignUpCloseNavigation(navigator)}
+        />
+      );
     }
 
     if (route.name === SceneNames.FRIENDS_SCENE) {
@@ -65,8 +93,9 @@ const HappySplit = React.createClass({
     return (
       <View style={styles.container}>
         <Navigator
-          initialRoute={{name: SceneNames.SETTINGS_SCENE, index: 0}}
+          initialRoute={{name: SceneNames.LOGIN_SCENE, index: 0}}
           renderScene={this.renderScene}
+          configureScene={this.configureScene}
         />
       </View>
     );

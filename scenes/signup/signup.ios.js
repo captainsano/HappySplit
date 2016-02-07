@@ -6,29 +6,22 @@ import React, {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fefefe',
   },
-  logoBox: {
-    width: 100,
-    height: 100,
-    marginBottom: 30,
-    borderRadius: 5,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
+  closeButtonContainer: {
+    position: 'absolute',
+    top: 15,
+    left: 15,
   },
-  logoBoxText: {
-    fontSize: 10,
-    color: '#fefefe',
-  },
-  loginBox: {
+  signupBox: {
+    marginTop: 75,
     width: 280,
-    marginBottom: 150,
     flexDirection: 'column',
   },
   textInput: {
@@ -55,14 +48,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const Login = React.createClass({
+const SignUp = React.createClass({
+  propTypes: {
+    onCloseNavigation: React.PropTypes.func.isRequired,
+  },
+
+  handleCloseButtonPress: function handleCloseButtonPress() {
+    this.props.onCloseNavigation();
+  },
+
   render: function render() {
     return (
       <View style={styles.container}>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoBoxText}>LOGO</Text>
-        </View>
-        <View style={styles.loginBox}>
+        <TouchableOpacity
+          style={styles.closeButtonContainer}
+          onPress={this.handleCloseButtonPress}
+        >
+          <Icon style={styles.closeButton} name="times" size={30} />
+        </TouchableOpacity>
+        <View style={styles.signupBox}>
           <TextInput
             style={styles.textInput}
             placeholder="Your Name"
@@ -101,4 +105,4 @@ const Login = React.createClass({
   },
 });
 
-export default Login;
+export default SignUp;
