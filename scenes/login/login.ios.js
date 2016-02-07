@@ -7,6 +7,8 @@ import React, {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import R from 'ramda';
+import Parse from 'parse/react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,18 +62,56 @@ const styles = StyleSheet.create({
 const Login = React.createClass({
   propTypes: {
     onSignUpNavigation: React.PropTypes.func.isRequired,
+    onLoginComplete: React.PropTypes.func.isRequired,
+  },
+
+  getInitialState: function getInitialState() {
+    return {
+      loggingIn: false,
+      error: '',
+      email: '',
+      password: '',
+    };
   },
 
   handleSignUpButtonPress: function handleSignUpButtonPress() {
     this.props.onSignUpNavigation();
   },
 
+  handleLoginButtonPress: function handleLoginButtonPress() {
+    // TODO: Add validation
+    this.setState({
+      loggingIn: true,
+    }, () => {
+      Parse.User.logIn(this.state.email, this.state.password, {
+        success: (user) => {
+          this.props.onLoginComplete(user);
+        },
+        error: (user, error) => {
+          // TODO: handle error
+          console.log(error);
+        },
+      });
+    });
+  },
+
+  handleChangeText: function handleChangeText(targetStateField) {
+    return (text) => {
+      this.setState(R.assoc(targetStateField, text, {}));
+    };
+  },
+
   render: function render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoBoxText}>LOGO</Text>
-        </View>
+    const loginBox = (() => {
+      if (this.state.loggingIn) {
+        return (
+          <View style={styles.loginBox}>
+            <Text>Logging in...</Text>
+          </View>
+        );
+      }
+
+      return (
         <View style={styles.loginBox}>
           <TextInput
             style={styles.textInput}
@@ -80,6 +120,8 @@ const Login = React.createClass({
             autoCorrect={false}
             autoFocus
             autoCapitalize="none"
+            onChangeText={this.handleChangeText('email')}
+            value={this.state.email}
           />
           <TextInput
             style={styles.textInput}
@@ -87,11 +129,14 @@ const Login = React.createClass({
             secureTextEntry
             autoCorrect={false}
             autoCapitalize="none"
+            onChangeText={this.handleChangeText('password')}
+            value={this.state.password}
           />
-          <TouchableHighlight>
-            <View style={styles.loginButtonContainer}>
-              <Text style={styles.loginButtonContainerText}>Login</Text>
-            </View>
+          <TouchableHighlight
+            style={styles.loginButtonContainer}
+            onPress={this.handleLoginButtonPress}
+          >
+            <Text style={styles.loginButtonContainerText}>Login</Text>
           </TouchableHighlight>
           <TouchableOpacity
             style={styles.signUpButtonContainer}
@@ -100,6 +145,15 @@ const Login = React.createClass({
             <Text style={styles.signUpButtonText}>New? Sign Up!</Text>
           </TouchableOpacity>
         </View>
+      );
+    })();
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.logoBox}>
+          <Text style={styles.logoBoxText}>LOGO</Text>
+        </View>
+        {loginBox}
       </View>
     );
   },

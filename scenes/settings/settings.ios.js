@@ -51,6 +51,14 @@ const styles = StyleSheet.create({
 });
 
 const Settings = React.createClass({
+  propTypes: {
+    onLogout: React.PropTypes.func.isRequired,
+  },
+
+  handleLogoutButtonPress: function handleLogoutButtonPress() {
+    this.props.onLogout();
+  },
+
   render: function render() {
     return (
       <View style={styles.container}>
@@ -61,7 +69,10 @@ const Settings = React.createClass({
         </View>
         <View style={styles.userMeta}>
           <Text style={styles.nameText}>Santhos Baala RS</Text>
-          <TouchableHighlight style={styles.logoutButton}>
+          <TouchableHighlight
+            style={styles.logoutButton}
+            onPress={this.handleLogoutButtonPress}
+          >
             <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableHighlight>
         </View>

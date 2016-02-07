@@ -6,6 +6,8 @@ import React, {
   Navigator,
 } from 'react-native';
 import R from 'ramda';
+import Parse from 'parse/react-native';
+Parse.initialize('nrgzVRP9cGHm1ylUoI88KTwNjgLnjc9TLS4Q99Uf', 'OljXTx7mqFtYADVsjYKdsuA3XJlWU0zvuCwvfxh3');
 
 import SceneNames from './scene-names';
 import Login from './scenes/login/login';
@@ -23,11 +25,48 @@ const styles = StyleSheet.create({
 });
 
 const HappySplit = React.createClass({
+  childContextTypes: {
+    currentUser: React.PropTypes.object,
+  },
+
+  getChildContext: function getChildContext() {
+    return {
+      currentUser: this.state.currentUser,
+    };
+  },
+
+  getInitialState: function getInitialState() {
+    return {
+      currentUser: null,
+      currentUserLoading: true,
+    };
+  },
+
+  componentDidMount: function componentDidMount() {
+    Parse.User.currentAsync().then((currentUser) => {
+      if (currentUser) {
+        this.setState({currentUser, currentUserLoading: false});
+      } else {
+        this.setState({currentUser: null, currentUserLoading: false});
+      }
+    });
+  },
+
   configureScene: function configureScene(route) {
     if (route.name === SceneNames.SIGNUP_SCENE) {
       // Disable swipe-to-close gesture
       return R.assocPath(['gestures', 'pop', 'edgeHitWidth'], 0, Navigator.SceneConfigs.FloatFromBottom);
     }
+  },
+
+  handleLoginComplete: function handleLoginComplete(navigator) {
+    return (user) => {
+      this.setState({
+        currentUser: user,
+      }, () => {
+        navigator.replace({name: SceneNames.FRIENDS_SCENE, index: 0});
+      });
+    };
   },
 
   handleSignUpNavigation: function handleSignUpNavigation(navigator) {
@@ -42,11 +81,23 @@ const HappySplit = React.createClass({
     };
   },
 
+  handleLogout: function handleLogout(navigator) {
+    return () => {
+      Parse.User.logOut();
+      this.setState({
+        currentUser: null,
+      }, () => {
+        navigator.replace({name: SceneNames.LOGIN_SCENE, index: 0});
+      });
+    };
+  },
+
   renderScene: function renderScene(route, navigator) {
     if (route.name === SceneNames.LOGIN_SCENE) {
       return (
         <Login
           onSignUpNavigation={this.handleSignUpNavigation(navigator)}
+          onLoginComplete={this.handleLoginComplete(navigator)}
         />
       );
     }
@@ -63,7 +114,7 @@ const HappySplit = React.createClass({
       return (
         <View style={{flex: 1}}>
           <Friends />
-          <TabBar navigator={navigator} />
+          <TabBar navigator={navigator}/>
         </View>
       );
     }
@@ -72,7 +123,7 @@ const HappySplit = React.createClass({
       return (
         <View style={{flex: 1}}>
           <Bills />
-          <TabBar navigator={navigator} />
+          <TabBar navigator={navigator}/>
         </View>
       );
     }
@@ -80,8 +131,8 @@ const HappySplit = React.createClass({
     if (route.name === SceneNames.SETTINGS_SCENE) {
       return (
         <View style={{flex: 1}}>
-          <Settings />
-          <TabBar navigator={navigator} />
+          <Settings onLogout={this.handleLogout(navigator)} />
+          <TabBar navigator={navigator}/>
         </View>
       );
     }
@@ -90,10 +141,17 @@ const HappySplit = React.createClass({
   },
 
   render: function render() {
+    if (this.state.currentUserLoading) {
+      return null;
+    }
+
     return (
       <View style={styles.container}>
         <Navigator
-          initialRoute={{name: SceneNames.LOGIN_SCENE, index: 0}}
+          initialRoute={{
+            name: this.state.currentUser ? SceneNames.FRIENDS_SCENE : SceneNames.LOGIN_SCENE,
+            index: 0,
+          }}
           renderScene={this.renderScene}
           configureScene={this.configureScene}
         />

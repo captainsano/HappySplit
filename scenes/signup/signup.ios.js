@@ -6,7 +6,9 @@ import React, {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import R from 'ramda';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Parse from 'parse/react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -53,8 +55,50 @@ const SignUp = React.createClass({
     onCloseNavigation: React.PropTypes.func.isRequired,
   },
 
+  getInitialState: function getInitialState() {
+    return {
+      name: '',
+      email: '',
+      password1: '',
+      password2: '',
+      submitting: false,
+      submitError: '',
+      completed: false,
+    };
+  },
+
+  handleTextFieldChange: function handleTextFieldChange(targetStateField) {
+    return (text) => {
+      this.setState(R.assoc(targetStateField, text, {}));
+    };
+  },
+
   handleCloseButtonPress: function handleCloseButtonPress() {
+    // TODO: Form validation
     this.props.onCloseNavigation();
+  },
+
+  handleSignupButtonPress: function handleSignupButtonPress() {
+    // TODO: Form validation
+    this.setState({
+      submiting: true,
+      submitError: '',
+    }, () => {
+      console.log('submittig...');
+      const user = new Parse.User();
+      user.set('username', this.state.email);
+      user.set('name', this.state.name);
+      user.set('password', this.state.password1);
+      user.signUp(null, {
+        success: (u) => {
+          console.log('Signed up!');
+        },
+        error: (u, error) => {
+          console.log('Error signing up!', error);
+          // TODO: Handle Errors
+        },
+      });
+    });
   },
 
   render: function render() {
@@ -72,6 +116,8 @@ const SignUp = React.createClass({
             placeholder="Your Name"
             autoCorrect={false}
             autoFocus
+            onChangeText={this.handleTextFieldChange('name')}
+            value={this.state.name}
           />
           <TextInput
             style={styles.textInput}
@@ -79,6 +125,8 @@ const SignUp = React.createClass({
             keyboardType="email-address"
             autoCorrect={false}
             autoCapitalize="none"
+            onChangeText={this.handleTextFieldChange('email')}
+            value={this.state.email}
           />
           <TextInput
             style={styles.textInput}
@@ -86,6 +134,8 @@ const SignUp = React.createClass({
             secureTextEntry
             autoCorrect={false}
             autoCapitalize="none"
+            onChangeText={this.handleTextFieldChange('password1')}
+            value={this.state.password1}
           />
           <TextInput
             style={styles.textInput}
@@ -93,8 +143,10 @@ const SignUp = React.createClass({
             secureTextEntry
             autoCorrect={false}
             autoCapitalize="none"
+            onChangeText={this.handleTextFieldChange('password2')}
+            value={this.state.password2}
           />
-          <TouchableHighlight>
+          <TouchableHighlight onPress={this.handleSignupButtonPress}>
             <View style={styles.loginButtonContainer}>
               <Text style={styles.loginButtonContainerText}>Sign Up</Text>
             </View>
