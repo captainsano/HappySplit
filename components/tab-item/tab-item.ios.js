@@ -35,6 +35,13 @@ const TabItem = React.createClass({
     iconName: React.PropTypes.string.isRequired,
     label: React.PropTypes.string.isRequired,
     active: React.PropTypes.bool.isRequired,
+    onPress: React.PropTypes.func.isRequired,
+  },
+
+  handleOnPress: function handleOnPress() {
+    if (!this.props.active) {
+      this.props.onPress();
+    }
   },
 
   render: function render() {
@@ -42,6 +49,7 @@ const TabItem = React.createClass({
       <TouchableHighlight
         style={[styles.item, this.props.active ? styles.activeItem : {}]}
         underlayColor={this.props.active ? '#000' : '#aaa'}
+        onPress={this.handleOnPress}
       >
         <View style={styles.itemInner}>
           <Icon name={this.props.iconName} size={20} color={this.props.active ? '#fff' : '#000'} />

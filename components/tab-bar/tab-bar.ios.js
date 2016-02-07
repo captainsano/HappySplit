@@ -19,6 +19,12 @@ const TabBar = React.createClass({
     navigator: React.PropTypes.object.isRequired,
   },
 
+  handleOnPress: function handleOnPress(navigator, targetSceneName) {
+    return () => {
+      navigator.replace({name: targetSceneName, index: 0});
+    };
+  },
+
   render: function render() {
     const [currentRoute] = this.props.navigator.getCurrentRoutes();
 
@@ -28,16 +34,19 @@ const TabBar = React.createClass({
           active={currentRoute && currentRoute.name === SceneNames.FRIENDS_SCENE}
           iconName="user"
           label="Friends"
+          onPress={this.handleOnPress(this.props.navigator, SceneNames.FRIENDS_SCENE)}
         />
         <TabItem
           active={currentRoute && currentRoute.name === SceneNames.BILLS_SCENE}
           iconName="rupee"
           label="Bills"
+          onPress={this.handleOnPress(this.props.navigator, SceneNames.BILLS_SCENE)}
         />
         <TabItem
           active={currentRoute && currentRoute.name === SceneNames.SETTINGS_SCENE}
           iconName="cog"
           label="Settings"
+          onPress={this.handleOnPress(this.props.navigator, SceneNames.SETTINGS_SCENE)}
         />
       </View>
     );
